@@ -23,7 +23,7 @@ namespace Web_Sharp_T_2.Controllers
         public ActionResult AddProduct([FromBody] ProductDTO productDTO)
         {
             int idProduct = _productManager.AddProduct(productDTO);
-            return Ok(idProduct);
+            return Ok($"Товар {productDTO.Name} успешно добавлен");
         }
         [HttpDelete("DeleteProduct")]
         public ActionResult DeleteProduct(int id)

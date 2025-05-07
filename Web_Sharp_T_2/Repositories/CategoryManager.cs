@@ -10,14 +10,16 @@ namespace Web_Sharp_T_2.Repositories
     {
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
-        public CategoryManager(IMapper mapper, IMemoryCache memoryCache)
+        private readonly IConfiguration _configuration;
+        public CategoryManager(IMapper mapper, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _mapper = mapper;
             _cache = memoryCache;
+            _configuration = configuration;
         }
         public int AddCategory(CategoryDTO categoryDTO)
         {
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 var cat = db.Categories.ToList();
                 var res = cat.FirstOrDefault(x => x.Name.ToLower() == categoryDTO.Name.ToLower());
@@ -34,7 +36,7 @@ namespace Web_Sharp_T_2.Repositories
 
         public bool DeleteCategory(int id)
         {
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 List<Category> cat = db.Categories.ToList();
                 var obj = cat.FirstOrDefault(x => x.Id == id);
@@ -54,7 +56,7 @@ namespace Web_Sharp_T_2.Repositories
                 return categoriesCache;
 
             List<Category> cats = new List<Category>();
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 cats = db.Categories.ToList();
             }

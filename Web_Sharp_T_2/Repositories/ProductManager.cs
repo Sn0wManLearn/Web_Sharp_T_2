@@ -11,10 +11,12 @@ namespace Web_Sharp_T_2.Repositories
     {
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
-        public ProductManager(IMapper mapper, IMemoryCache memoryCache)
+        private readonly IConfiguration _configuration;
+        public ProductManager(IMapper mapper, IMemoryCache memoryCache, IConfiguration configuration)
         {
             _mapper = mapper;
             _cache = memoryCache;
+            _configuration = configuration;
         }
         public IEnumerable<ProductDTO> GetProducts()
         {
@@ -22,7 +24,7 @@ namespace Web_Sharp_T_2.Repositories
                 return productsCache;
 
             List<Product> products = new List<Product>();
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 products = db.Products.ToList();
             }
@@ -34,7 +36,7 @@ namespace Web_Sharp_T_2.Repositories
         }
         public int AddProduct(ProductDTO productDTO)
         {
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 var products = db.Products.ToList();
                 var res = products.FirstOrDefault(x => x.Name.ToLower() == productDTO.Name.ToLower());
@@ -50,7 +52,7 @@ namespace Web_Sharp_T_2.Repositories
         }
         public bool DeleteProduct(int id)
         {
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 List<Product> products = db.Products.ToList();
                 var obj = products.FirstOrDefault(x => x.Id == id);
@@ -65,7 +67,7 @@ namespace Web_Sharp_T_2.Repositories
         }
         public bool AddProductPrice(int id, int price)
         {
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 var products = db.Products.ToList();
                 var res = products.FirstOrDefault(x => x.Id == id);

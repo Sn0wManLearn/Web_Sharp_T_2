@@ -24,7 +24,7 @@ namespace Web_Sharp_T_2.Repositories
                 return GetSCV(productsCache);
 
             List<Product> products = new List<Product>();
-            using (var db = new ContextDB())
+            using (var db = new ContextDB(_configuration.GetValue<string>("PathToDB")))
             {
                 var cat = db.Categories.ToList();
                 products = db.Products.ToList();
